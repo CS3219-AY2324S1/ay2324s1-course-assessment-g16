@@ -1,58 +1,121 @@
-const { io } = require('socket.io-client');
+const { createServer } = require("node:http");
+const { Server } = require("socket.io");
+const ioc = require('socket.io-client');
 const config = require('../config/config');
-
-const socketURL = config.serverAddress;
+const { startCollaboration } = require('../services/collaborationService');
+const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const MatchedPair = require('./collabTestSchema');
+const axios = require('axios');
+const MockAdapter = require('axios-mock-adapter');
 
 jest.setTimeout(20000);
 
 describe('Collaboration Service', () => {
-    let user1, user2, sessionId;
+    let io, user1, user2, mongod, port;
 
+    const mockMatch = {
+        sessionId: "123c44c9-9bc3-402f-ba56-689eb0d2774d",
+        id1: "Gc2Bz9Nl8Wx4",
+        id2: "PxJ3lVtWz8Kq",
+        isEnded: false,
+        questionId: new mongoose.Types.ObjectId("65378371752185e6e1b5b342"),
+        language: "Java",
+        proficiency: "None",
+        difficulty: "Easy",
+        topic: "Arrays",
+    };
+
+    const sessionId = "123c44c9-9bc3-402f-ba56-689eb0d2774d";
+
+    beforeAll(async() => {
+        mongod = await MongoMemoryServer.create();
+        const mongoUri = mongod.getUri();
+
+        await mongoose.connect(mongoUri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+
+        console.log("testDB connected");
+
+        await MatchedPair(mockMatch).save();
+
+        const mock = new MockAdapter(axios);
+
+        mock.onGet(`${config.matchingServiceUrl}/getMatchSession/Gc2Bz9Nl8Wx4`)
+            .reply(200, {
+                sessionId: "123c44c9-9bc3-402f-ba56-689eb0d2774d"
+            });
+
+        mock.onGet(`${config.matchingServiceUrl}/getMatchSession/PxJ3lVtWz8Kq`)
+            .reply(200, {
+                sessionId: "123c44c9-9bc3-402f-ba56-689eb0d2774d"
+            });
+
+        mock.onGet(`${config.matchingServiceUrl}/getSession/123c44c9-9bc3-402f-ba56-689eb0d2774d`)
+            .reply(200, {
+                sessionId: "123c44c9-9bc3-402f-ba56-689eb0d2774d",
+                session: mockMatch
+            });
+
+        mock.onDelete(`${config.matchingServiceUrl}/end/123c44c9-9bc3-402f-ba56-689eb0d2774d`)
+            .reply(200, {status: "success"});
+
+        const httpServer = createServer();
+        io = new Server(httpServer);
+        const serverReadyPromise = new Promise((resolve) => {
+            httpServer.listen(() => {
+              console.log('Server is running');
+              io.on("connection", async(socket) => {
+                console.log("socket connected: ", socket.id);
+                await startCollaboration(socket, io);
+                });
+              resolve();
+            });
+        });
+
+        await serverReadyPromise;
+
+        port = httpServer.address().port;
+
+    });
+    
     beforeEach(async() => {
 
-        sessionId = "123c44c9-9bc3-402f-ba56-689eb0d2774d";
-
-        user1 = io(socketURL, {
+        user1 = ioc(`http://localhost:${port}`, {
             query: {
                 userId: 'Gc2Bz9Nl8Wx4',
                 sessionId: sessionId
             }
         });
 
-        user2 = io(socketURL, {
+        user2 = ioc(`http://localhost:${port}`, {
             query: {
                 userId: 'PxJ3lVtWz8Kq',
                 sessionId: sessionId
             }
         });
-
-        user1.on('join', (recvSessionId) => {
-            expect(recvSessionId).toBe(sessionId);
-        });
-
-        user2.on('join', (recvSessionId) => {
-            expect(recvSessionId).toBe(sessionId);
-        });
-
-        await new Promise(resolve => setTimeout(resolve, 4000));
+        
+        await new Promise(resolve => setTimeout(resolve, 5000));
 
     });
-
-    afterAll(async() => {
+    
+    afterEach(async() => {
         await user1.disconnect();
         await user2.disconnect();
     });
     
     test('code change should be detected and broadcasted to all users in the same room', async() => {
+        await user1.emit('update-code', 1, 'console.log("hello world");');
 
-        await user1.emit('change-line', 1, 'console.log("hello world");');
         user2.on('code-changed', (line, code) => {
             expect(line).toBe(1);
             expect(code).toBe('console.log("hello world");');
             console.log("1 ", line, code);
         });
-        
-        await user2.emit('change-line', 2, 'console.log("bye world");');
+
+        await user2.emit('update-code', 2, 'console.log("bye world");');
 
         user1.on('code-changed', (line, code) => {
             expect(line).toBe(2);

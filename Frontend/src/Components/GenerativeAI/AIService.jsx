@@ -14,7 +14,7 @@ export const getAIResponse = async (userId, prompt) => {
 
 export const exitAISession = async (userId) => {
   try {
-    await axios.delete(`${API_ENDPOINT}/exitGpt`, { data: { userId } });
+    await axios.delete(`${API_ENDPOINT}/exitGpt/${userId}`);
   } catch (error) {
     console.error('Error exiting AI session:', error);
     throw error;
@@ -23,7 +23,7 @@ export const exitAISession = async (userId) => {
 
 export const getAICache = async (userId) => {
   try {
-    const response = await axios.get(`${API_ENDPOINT}/getCache`, { params: { userId } });
+    const response = await axios.get(`${API_ENDPOINT}/getCache/${userId}`);
     return response.data;
   } catch (error) {
     console.error('Error getting AI cache:', error);

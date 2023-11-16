@@ -5,18 +5,25 @@ import './MatchPopup.css'; // Ensure this path is correct
 import { LoadPopup } from './LoadPopup';
 import { getUserId } from '../../User/UserState'; 
 import { useNavigate } from 'react-router-dom';
+import { NotSuccessOutput } from './NotSuccessOutput';
 
 const MatchPopup = ({ isOpen, isClose }) => {
     const [goToLoadPopup, setGoToLoadPopup] = useState(false);
     const [showSuccessOutput, setShowSuccessOutput] = useState(false);
     const [collaboratorId, setCollaboratorId] = useState(null);
     const navigate = useNavigate();
+    const [showNotSuccessOutput, setShowNotSuccessOutput] = useState(false);
 
     // States for the matching criteria
-    const [chosenDifficulty, setChosenDifficulty] = useState("No Preference");
-    const [chosenLanguage, setChosenLanguage] = useState("No Preference");
-    const [chosenProficiency, setChosenProficiency] = useState("No Preference");
-    const [chosenTopic, setChosenTopic] = useState("No Preference");
+    const [chosenDifficulty, setChosenDifficulty] = useState("None");
+    const [chosenLanguage, setChosenLanguage] = useState("None");
+    const [chosenProficiency, setChosenProficiency] = useState("None");
+    const [chosenTopic, setChosenTopic] = useState("None");
+
+    const handleMatchCancellation = () => {
+        setGoToLoadPopup(false);
+        setShowNotSuccessOutput(true);
+      };
 
     const initiateMatching = () => {
 
@@ -30,17 +37,15 @@ const MatchPopup = ({ isOpen, isClose }) => {
             return;
         }
 
-        const formatPreference = (preference) => {
-            return preference === "No Preference" ? "None" : preference;
-        };
-
         const payload = {
             userId: userId,
-            difficulty: formatPreference(chosenDifficulty),
-            language: formatPreference(chosenLanguage),
-            proficiency: formatPreference(chosenProficiency),
-            topic: formatPreference(chosenTopic)
+            difficulty: chosenDifficulty,
+            language: chosenLanguage,
+            proficiency: chosenProficiency,
+            topic: chosenTopic
         };
+
+   
 
        // Make a post request to backend with the payload
        const URL = `http://localhost:3004/home/${userId}`;
@@ -55,17 +60,20 @@ const MatchPopup = ({ isOpen, isClose }) => {
                    setShowSuccessOutput(true); // Triggers the SuccessOutput popup
                    // Delay navigation for 1.5 seconds
                    setTimeout(() => {
-                    navigate('/collaboration', { state: { sessionId, collaboratorId } });
-                }, 1500);
+                    navigate('/collaboration', { state: { sessionId, collaboratorId, userId: getUserId() } });
+                }, 1000);
                } else {
                    console.log("No match found");
                    setShowSuccessOutput(false); // SuccessOutput popup does not show
+                   setShowNotSuccessOutput(true); // Triggers the NotSuccessOutput popup
+                   
                }
 //               setGoToLoadPopup(false); // Close the loading popup
            })
            .catch(error => {
                console.error("Error finding a match: ", error);
                setGoToLoadPopup(false); // Close the loading popup
+               setShowNotSuccessOutput(true); // Triggers the NotSuccessOutput popup
            
            });
         };
@@ -84,17 +92,17 @@ const MatchPopup = ({ isOpen, isClose }) => {
                             <option value="Easy">Easy</option>
                             <option value="Medium">Medium</option>
                             <option value="Hard">Hard</option>
-                            <option value="No Preference">No Preference</option>
+                            <option value="None">No Preference</option>
                         </select>
                     </div>
                     <div className="criteria-field">
                         <label>Language:</label>
                         <select value={chosenLanguage} onChange={(e) => setChosenLanguage(e.target.value)}>
-                            <option value="Python">Python</option>
-                            <option value="Java">Java</option>
-                            <option value="C++">C++</option>
-                            <option value="JavaScript">JavaScript</option>
-                            <option value="No Preference">No Preference</option>
+                            <option value="python">Python</option>
+                            <option value="java">Java</option>
+                            <option value="cpp">C++</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="None">No Preference</option>
                         </select>
                         </div>
                     <div className="criteria-field">
@@ -103,7 +111,7 @@ const MatchPopup = ({ isOpen, isClose }) => {
                             <option value="Beginner">Beginner</option>
                             <option value="Intermediate">Intermediate</option>
                             <option value="Advanced">Advanced</option>
-                            <option value="No Preference">No Preference</option>
+                            <option value="None">No Preference</option>
                         </select>
                         </div>
                     <div className="criteria-field">
@@ -113,16 +121,18 @@ const MatchPopup = ({ isOpen, isClose }) => {
                             <option value="Data Structure">Data Structure</option>
                             <option value="Optimisation">Optimisation</option>
                             <option value ="Recursion">Recursion</option>
-                            <option value = "No Preference">No Preference</option>
+                            <option value = "None">No Preference</option>
                         </select>
                         </div>
                 </div>
                 <button className="match-button" onClick={initiateMatching}>Match</button>
                 </div>
-                {goToLoadPopup && <LoadPopup isOpen={true} isClose={() => setGoToLoadPopup(false)} />}
+                {goToLoadPopup && <LoadPopup isOpen={true} isClose={() => setGoToLoadPopup(false)} userId={getUserId()} onMatchCancelled={handleMatchCancellation} />}
 
                 {showSuccessOutput && 
                 <SuccessOutput isOpen={true} isClose={() => setShowSuccessOutput(false)} />}
+                {showNotSuccessOutput &&
+                <NotSuccessOutput isOpen={true} isClose={() => setShowNotSuccessOutput(false)} />}
             </div>
     );
 }

@@ -8,8 +8,8 @@ router.get('/', (req, res) => {
 
 router.post('/generate', controller.getResponse);
 
-router.delete('/exitGpt/:userId', controller.exitSession);
+router.delete('/exitGpt', controller.exitSession);
 
-router.get('/getCache/:userId', controller.getCache);
+router.get('/getCache', controller.getCache);
 
 module.exports = router;

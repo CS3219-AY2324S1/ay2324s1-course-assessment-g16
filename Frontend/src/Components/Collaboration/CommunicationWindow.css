@@ -87,20 +87,18 @@
   
   .chat-toggle-btn {
     background: url('../../communicationLogo.png') no-repeat center center; 
-    background-size: cover;
+    background-size: contain;
     border: none;
     border-radius: 10px;
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     position: fixed;
-    bottom: 10px;
-    left: 10px;
-    z-index: 1010; 
+    bottom: auto;
+    right: 150px;
+    top: 25px;
+    z-index: 10000; 
     opacity: 1;
   }
 

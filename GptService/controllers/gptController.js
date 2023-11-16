@@ -29,7 +29,7 @@ async function getResponse(req, res, next) {
 
 async function exitSession(req, res, next) {
     try {
-        const userId = req.params.userId;
+        const userId = req.body.userId;
 
         const response = gptService.exitSession(userId);
 
@@ -49,7 +49,7 @@ async function exitSession(req, res, next) {
 
 async function getCache(req, res, next) {
     try {
-        const userId = req.params.userId;
+        const userId = req.body.userId;
 
         const response = gptService.getCache(userId);
 

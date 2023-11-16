@@ -1,84 +1,84 @@
 .profile-container {
     background: white;
     border-radius: 10px;
-    display:flex;
+    display: flex;
     flex-direction: column;
     padding: 30px;
     gap: 20px;
-}
-
-.edit-container {
-    display:flex;
-    justify-content: flex-end
-}
-
-.profile-section {
-    display:flex;
-    flex-direction: column;  
+   }
+   
+   .edit-container {
+    display: flex;
+    justify-content: flex-end;
+   }
+   
+   .profile-section {
+    display: flex;
+    flex-direction: column;
     gap: 40px;
-}
-
-.profile-edit {
+   }
+   
+   .profile-edit {
     width: 30px;
     height: 30px;
     cursor: pointer;
     -webkit-transition-duration: 0.2s; /* Safari */
     transition-duration: 0.2s;
     box-shadow: none;
-}
-
-.profile-edit:hover {
+   }
+   
+   .profile-edit:hover {
     -webkit-filter: drop-shadow(3px 3px 1px rgba(100, 100, 111, 0.3));
-    
+   
     filter: drop-shadow(3px 3px 1px rgba(100, 100, 111, 0.3));
-}
-
-.profile-info {
-    display:flex;
+   }
+   
+   .profile-info {
+    display: flex;
     flex-direction: column;
     gap: 5px;
-}
-
-.profile-field {
+   }
+   
+   .profile-field {
     font-size: 20px;
     font-weight: 600;
-}
-
-.profile-input {
+   }
+   
+   .profile-input {
     width: 35%;
-    border:none;
+    border: none;
     outline: none;
     border-bottom: 3px solid;
     font-size: 17px;
-}
-
-.profile-submit-container{
+   }
+   
+   .profile-submit-container {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 30px;
     margin-top: 20px;
-}
-
-.submit-btn {
+   }
+   
+   .submit-btn {
     width: 90px;
     height: 50px;
     color: #fff;
-    background: #52CC65;
+    background: #52cc65;
     border: none;
     border-radius: 5px;
     font-size: 19px;
     cursor: pointer;
     -webkit-transition-duration: 0.2s; /* Safari */
     transition-duration: 0.2s;
-}
-
-.submit-btn:hover {
+   }
+   
+   .submit-btn:hover {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     background: #4cbd5d;
-}
-
-.cancel-btn {
+   }
+   
+   .cancel-btn {
     width: 90px;
     height: 50px;
     color: #fff;
@@ -90,9 +90,18 @@
     -webkit-transition-duration: 0.2s; /* Safari */
     transition-duration: 0.2s;
     box-shadow: none;
-}
-
-.cancel-btn:hover {
+   }
+   
+   .cancel-btn:hover {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     background: #868383;
-}
+   }
+   
+   .edit-profile-language-dropdown {
+    width: 50%;
+    height: fit-content;
+    font-size: 16px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid;
+   }

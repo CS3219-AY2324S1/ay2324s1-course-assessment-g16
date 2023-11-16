@@ -69,11 +69,23 @@ const startCommunication = async(socket) => {
         socket.to(sessionId).emit('collaborator-end-call');
     });
 
+    socket.on('reject-call', () => {
+        console.log(userId, 'rejected call');
+        socket.to(sessionId).emit('call-rejected');
+      });
+      
+
     socket.on('disconnect', () => {
         console.log(userId, ' disconnect');
         endCommunication(sessionId);
         socket.to(sessionId).emit('collaborator-disconnected');
     });
+
+    socket.on('ice-candidate', (data) => {
+        console.log(userId, ' sends ice candidate');
+        socket.to(sessionId).emit('ice-candidate', data);
+    });
+    
 
 }
 

@@ -60,18 +60,22 @@ const getMatchQuestion = async (req, res) => {
 };
 
 const getQuestion = async (req, res) => {
-  const { questionId } = req.params.id;
-
-  const question = await Question.findById(questionId);
-
-  const response = {
-    questionId: questionId,
-    question: question,
-  };
-
-  console.log("get", questionId);
-
-  return res.status(200).json(response);
+  try {
+    const questionId = req.params.id;
+    const question = await Question.findOne({ _id: questionId });
+    if (!question) {
+      return res.status(404).json({ error: "Question not found" });
+    }
+    const response = {
+      questionId: questionId,
+      question: question,
+    };
+    console.log("Identified a question:", response);
+    return res.status(200).json(response);
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
 };
 
 const getAllQuestions = async (req, res) => {

@@ -27,7 +27,7 @@ let isCalling = false;
 
 const streamConstraints = {
     audio: true,
-    video: true, // change to false for audio only call
+    video: false, // change to false for audio only call
 };
 
 const callUser = async () => {

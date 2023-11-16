@@ -14,6 +14,7 @@ import { Navbar } from "./Components/Navbar/Navbar";
 import { Questions } from "./Components/QuestionList/QuestionList";
 import { LandingPage } from "./Components/LandingPage/LandingPage";
 import CollaborationWindow from "./Components/Collaboration/CollaborationWindow";
+import CommunicationWindow from "./Components/Collaboration/CommunicationWindow";
 import AIChat from "./Components/GenerativeAI/AIChat";
 
 import { isUserAdmin } from "./User/UserState";
@@ -45,12 +46,18 @@ const AIChatWrapper = () => {
   return location.pathname === "/collaboration" ? <AIChat /> : null;
 };
 
+const ChatWrapper = () => {
+  const location = useLocation();
+  return location.pathname === "/collaboration" ? <CommunicationWindow /> : null;
+};
+
 function App() {
   return (
     <Router>
       <div>
         <Navbar />
         <AIChatWrapper />
+        <ChatWrapper />
         <Routes>
           <Route path="/login" element={<LoginSignUp />} />
 

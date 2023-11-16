@@ -1,148 +1,220 @@
-const CollaborativeInput = require('../models/collaborationCodeModel');
-const axios = require('axios');
-const config = require('../config/config');
+const {
+	CollaborativeInput,
+	LineInput,
+} = require("../models/collaborationCodeModel");
+const axios = require("axios");
+const config = require("../config/config");
+const DEFAULT_CODE = "#Enter your code here";
 
-const getCollaborativeInput = async(sessionId) => {
-    try {
-        const dataOutput = await CollaborativeInput.findOne({ sessionId: sessionId });
+const getCollaborativeInput = async (sessionId) => {
+	try {
+		const dataOutput = await CollaborativeInput.findOne({sessionId: sessionId});
 
-        console.log(`Get collaborative input for session ${sessionId}`);
+		console.log(
+			`Get collaborative input for session ${sessionId}: ${dataOutput}`
+		);
 
-        return [dataOutput.initTime, dataOutput.language, dataOutput.codes];
+		return [dataOutput.initTime, dataOutput.language, dataOutput.codes];
+	} catch (error) {
+		console.log(`Error getting collaborative input for session ${sessionId}`);
 
-    } catch (error) {
-        console.log(`Error getting collaborative input for session ${sessionId}`);
+		return ["None", "", []];
+	}
+};
 
-        return ["None", "", ""];
-    }
-}
+const getCollaborativeInputByLine = async (sessionId, line) => {
+	try {
+		const dataOutput = await CollaborativeInput.findOne({
+			sessionId: sessionId,
+			"codes.line": line,
+		});
 
-const getCollaborativeInputByLine = async(sessionId, line) => {
-    try {
-        const dataOutput = await CollaborativeInput.findOne({ sessionId: sessionId, 'codes.line': line });
+		console.log(
+			`Get collaborative input for session ${sessionId} line ${line}`
+		);
 
-        console.log(`Get collaborative input for session ${sessionId} line ${line}`);
+		return [dataOutput.language, line, dataOutput.codes[line].code];
+	} catch (error) {
+		console.error(
+			`Error getting collaborative input by line for session ${sessionId}`
+		);
 
-        return [dataOutput.language, line, dataOutput.codes[line].code];
+		return ["None", line, ""];
+	}
+};
 
-    } catch (error) {
-        console.error(`Error getting collaborative input by line for session ${sessionId}`);
+const initCollaborativeCode = async (initTime, sessionId, language, userId) => {
+	try {
+		const input = await getCollaborativeInput(sessionId);
 
-        return ["None", line, ""];
-    }
-}
+		if (input[0] === "None") {
+			const collaborativeInput = new CollaborativeInput({
+				sessionId: sessionId,
+				initTime: initTime,
+				language: language,
+				codes: [
+					new LineInput({
+						line: 1,
+						code: DEFAULT_CODE,
+						lastModifier: userId,
+					}),
+				],
+			});
 
-const initCollaborativeCode = async(initTime, sessionId, language) => {
-    try {
-        const input = await getCollaborativeInput(sessionId);
+			await collaborativeInput.save();
 
-        if (input[0] === "None") {
-            const collaborativeInput = new CollaborativeInput(
-                { sessionId: sessionId, initTime: initTime, language: language, codes: [] });
+			console.log(`Successfully added:`, collaborativeInput);
 
-            await collaborativeInput.save();
+			return [collaborativeInput.language, collaborativeInput.codes];
+		} else {
+			if (Date.now() - input[0] >= config.MAX_TIME_LIMIT) {
+				return ["session-end", []];
+			}
+			console.log(
+				`Collaborative input already exists for ${sessionId}: ${input}`
+			);
+			return [input[1], input[2]];
+		}
+	} catch (error) {
+		console.log(`Failed to add collaborative input for ${sessionId}: ${error}`);
 
-            console.log(`Successfully added:`, collaborativeInput);
+		return ["None", []];
+	}
+};
 
-            return [collaborativeInput.initTime, language, []];
+const updateCollaborativeLineInput = async (
+	sessionId,
+	line,
+	code,
+	lastModifier
+) => {
+	try {
+		let collaborativeInput = await CollaborativeInput.findOne({
+			sessionId: sessionId,
+			"codes.line": line,
+		});
 
-        } else {
-            console.log(`Collaborative input already exists for ${sessionId}`);
+		if (collaborativeInput) {
+			await CollaborativeInput.updateOne(
+				{sessionId: sessionId, "codes.line": line},
+				{$set: {"codes.$.code": code, "codes.$.lastModifier": lastModifier}}
+			);
+		} else {
+			await CollaborativeInput.updateOne(
+				{sessionId: sessionId},
+				{$push: {codes: {line: line, code: code, lastModifier: lastModifier}}}
+			);
+		}
 
-            return input;
-        }
+		console.log(`Successfully updated line:`, line);
+	} catch (error) {
+		console.log(
+			`Failed to update collaborative input for ${sessionId} line ${line}`
+		);
+	}
+};
 
-    } catch (error) {
-        console.log(`Failed to add collaborative input for ${sessionId}`);
+const updateCollaborativeInput = async (sessionId, codes) => {
+	try {
+		let collaborativeInput = await CollaborativeInput.findOne({
+			sessionId: sessionId,
+		});
+		const sessionReq = await axios.get(
+			`${config.matchingServiceUrl}/getSession/${sessionId}`
+		);
 
-        return ["None", ""];
-    }
-}
+		const session = sessionReq.data.session;
 
-const updateCollaborativeLineInput = async(sessionId, line, code, lastModifier) => {
-    try {
-        let collaborativeInput = await CollaborativeInput.findOne(
-            { sessionId: sessionId, 'codes.line': line });
+		if (collaborativeInput.codes !== null) {
+			collaborativeInput.codes = codes;
+		} else {
+			collaborativeInput = new CollaborativeInput({
+				sessionId: sessionId,
+				initTime: session.initTime,
+				language: session.language,
+				codes: codes,
+			});
+		}
 
-        if (collaborativeInput) {
-            await CollaborativeInput.updateOne(
-                { sessionId: sessionId, 'codes.line': line },
-                { $set: { 'codes.$.code': code, 'codes.$.lastModifier': lastModifier } }
-            );
+		await collaborativeInput.save();
 
-        } else {
-            await CollaborativeInput.updateOne(
-                { sessionId: sessionId },
-                { $push: { codes: { line: line, code: code, lastModifier: lastModifier } } }
-            );
-        }
+		console.log(`Successfully updated:`, collaborativeInput);
+	} catch (error) {
+		console.log(`Failed to update collaborative input for ${sessionId}`);
+	}
+};
 
-        console.log(`Successfully updated line:`, line);
+const updateCollaborativeLanguage = async (sessionId, language) => {
+	try {
+		let collaborativeInput = await CollaborativeInput.findOne({
+			sessionId: sessionId,
+		});
+		const sessionReq = await axios.get(
+			`${config.matchingServiceUrl}/getSession/${sessionId}`
+		);
 
-    } catch (error) {
-        console.log(`Failed to update collaborative input for ${sessionId} line ${line}`);
-    }
-}
+		const session = sessionReq.data.session;
 
-const updateCollaborativeInput = async(sessionId, codes) => {
-    try {
-        let collaborativeInput = await CollaborativeInput.findOne({ sessionId: sessionId });
-        const sessionReq = await axios.get(`${config.matchingServiceUrl}/getSession/${sessionId}`);
+		if (collaborativeInput.language !== null) {
+			collaborativeInput.language = language;
+		} else {
+			collaborativeInput = new CollaborativeInput({
+				sessionId: sessionId,
+				initTime: session.initTime,
+				language: language,
+				codes: [
+					new LineInput({
+						line: 1,
+						code: DEFAULT_CODE,
+						lastModifier: userId,
+					}),
+				],
+			});
+		}
 
-        const session = sessionReq.data.session;
+		await collaborativeInput.save();
 
-        if (collaborativeInput.codes !== null) {
-            collaborativeInput.codes = codes;
+		console.log(`Successfully updated:`, collaborativeInput);
+	} catch (error) {
+		console.log(`Failed to update collaborative language for ${sessionId}`);
+	}
+};
 
-        } else {
-            collaborativeInput = new CollaborativeInput({ sessionId: sessionId, initTime: session.initTime, language: session.language, codes: codes });
-        }
+const deleteCollaborativeInput = async (sessionId) => {
+	try {
+		const result = await CollaborativeInput.deleteOne({sessionId: sessionId});
 
-        await collaborativeInput.save();
+		console.log(`Successfully deleted:`, result);
+	} catch (error) {
+		console.log(`Failed to delete collaborative input for ${sessionId}`);
+	}
+};
 
-        console.log(`Successfully updated:`, collaborativeInput);
+const deleteCollaborativeLineInput = async (sessionId, line) => {
+	try {
+		const collaborativeInput = await CollaborativeInput.findOne({
+			sessionId: sessionId,
+		});
 
-    } catch (error) {
-        console.log(`Failed to update collaborative input for ${sessionId}`);
-    }
-}
+		collaborativeInput.codes.splice(line, 1);
 
-const deleteCollaborativeInput = async(sessionId) => {
-    try {
-        const result = await CollaborativeInput.deleteOne({ sessionId: sessionId });
+		await collaborativeInput.save();
 
-        console.log(`Successfully deleted:`, result);
-
-        return true;
-
-    } catch (error) {
-        console.log(`Failed to delete collaborative input for ${sessionId}`);
-        
-        return false;
-    }
-}
-
-const deleteCollaborativeLineInput = async(sessionId, line) => {
-    try {
-        const collaborativeInput = await CollaborativeInput.findOne({ sessionId: sessionId });
-
-        collaborativeInput.codes.splice(line, 1);
-
-        await collaborativeInput.save();
-
-        console.log(`Successfully deleted:`, collaborativeInput);
-        
-    } catch (error) {
-        console.log(`Failed to delete collaborative input for ${sessionId} line ${line}`);
-    }
-}
+		console.log(`Successfully deleted:`, collaborativeInput);
+	} catch (error) {
+		console.log(
+			`Failed to delete collaborative input for ${sessionId} line ${line}`
+		);
+	}
+};
 
 module.exports = {
-    getCollaborativeInput,
-    getCollaborativeInputByLine,
-    initCollaborativeCode,
-    updateCollaborativeLineInput,
-    updateCollaborativeInput,
-    deleteCollaborativeInput,
-    deleteCollaborativeLineInput
-}
+	getCollaborativeInput,
+	getCollaborativeInputByLine,
+	initCollaborativeCode,
+	updateCollaborativeLineInput,
+	updateCollaborativeInput,
+	updateCollaborativeLanguage,
+	deleteCollaborativeInput,
+	deleteCollaborativeLineInput,
+};
