@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  frontend:
+    build: ./Frontend
+    ports:
+      - 3001:3001
+    volumes:
+      - ./Frontend:/app
+      - /app/node_modules 
+    env_file:
+      - ./Frontend/.env
+    networks:
+      - peer-prep-network
+
+  user-service:
+    build: ./UserService
+    ports:
+      - 3002:3002
+    volumes:
+      - ./UserService:/app
+      - /app/node_modules 
+    networks:
+      - peer-prep-network
+  
+  user-service-database:
+    image: mongo:latest
+    ports:
+      - 27018:27017
+    volumes:
+      - user_service_database_volume:/data/db
+    networks:
+      - peer-prep-network
+
+  question-service:
+    build: ./QuestionService
+    ports:
+      - "3003:3003"
+    depends_on:
+      - question-service-database
+    networks:
+      - peer-prep-network
+
+  question-service-database:
+    image: mongo:latest
+    ports:
+      - "27019:27017"
+    volumes:
+      - question_service_database_volume:/data/db
+    networks:
+      - peer-prep-network
+
+networks:
+  peer-prep-network:
+    driver: bridge
+
+volumes:
+  question_service_database_volume: 
+    driver: local
+
+  user_service_database_volume: 
+    driver: local

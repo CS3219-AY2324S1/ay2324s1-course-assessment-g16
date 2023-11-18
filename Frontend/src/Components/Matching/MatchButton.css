@@ -1,0 +1,23 @@
+.find-match-button {
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 50px;
+    color: #fff;
+    background: #52CC65;
+    border: none;
+    border-radius: 5px;
+    font-size: 19px; 
+    white-space: nowrap; 
+    cursor: pointer;
+    -webkit-transition-duration: 0.2s; /* Safari */
+    transition-duration: 0.2s;
+  }
+
+  .find-match-button:hover{
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    background: #4cbd5d;
+  }
+

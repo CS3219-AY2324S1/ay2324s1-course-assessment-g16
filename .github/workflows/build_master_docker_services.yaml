@@ -1,0 +1,17 @@
+name: Build All Docker Containers
+
+on: [push, pull_request]
+
+jobs:
+  build-all-services:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Environment
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build with Docker Compose
+        run: docker-compose build --no-cache

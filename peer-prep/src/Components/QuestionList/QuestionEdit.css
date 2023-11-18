@@ -1,0 +1,19 @@
+.q-form-header span {
+    padding: 0.5rem 1rem;
+    font-size: 25px
+}
+
+.q-form-name {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    min-height: 60px;
+    overflow: hidden;
+}
+
+.q-form-title {
+    width: 100%;
+    min-height: 30px;
+    overflow: hidden;
+    font-size: 22px;
+  }

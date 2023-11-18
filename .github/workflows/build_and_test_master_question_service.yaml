@@ -1,0 +1,56 @@
+name: Build And Test Question Service
+
+on:
+  push:
+    paths:
+      - "QuestionService/**"
+      - ".github/workflows/build_and_test_master_question_service.yaml"
+
+  pull_request:
+    paths:
+      - "QuestionService/**"
+      - ".github/workflows/build_and_test_master_question_service.yaml"
+
+jobs:
+  build-and-test-question-service:
+    runs-on: ubuntu-latest
+
+    env:
+      CONTAINER_NAME: "ay2324s1-course-assessment-g16_question-service_1" # Here _ is being used after file directory and service name vs -
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Environment
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Question Service and Question Service Database with Docker Compose
+        run: docker-compose build --no-cache question-service question-service-database
+
+      - name: Run Question Service and Question Service Database with Docker Compose
+        run: docker-compose up -d question-service question-service-database
+
+      # - name: Wait For Startup
+      #   run: sleep 30
+
+      - name: List Docker Containers
+        run: docker ps
+
+      - name: Logs [For Checking Status Only]
+        run: docker-compose logs
+
+      - name: Run Test Cases in Question Service
+        run: docker exec $CONTAINER_NAME npm test
+
+      - name: Retrieve Artifacts [JEST Test Reports]
+        run: docker cp $CONTAINER_NAME:/app/coverage ./question-service-test-jest-reports
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: question-service-test-jest-report-artifacts
+          path: ./question-service-test-jest-reports/*
+
+      - name: Shut Down Containers
+        run: docker-compose down

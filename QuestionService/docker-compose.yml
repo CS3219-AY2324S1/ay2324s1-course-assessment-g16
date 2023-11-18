@@ -1,0 +1,21 @@
+version: '3'
+services:
+  question-service-database:
+    image: mongo:latest
+    ports:
+      - "27019:27017"
+    networks:
+      - my-net
+
+  question-service:
+    build: .
+    ports:
+      - "3003:3003"
+    depends_on:
+      - question-service-database
+    networks:
+      - my-net
+
+networks:
+  my-net:
+    driver: bridge

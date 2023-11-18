@@ -1,0 +1,25 @@
+*::before {
+    margin: 0;
+    box-sizing: border-box; 
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    height: 12vh;
+}
+
+.logo {
+    font-size: 35px;
+    font-weight: 800;
+    margin: 30px;
+}
+
+.nav span {
+    color: #52CC65;
+}
+
+.nav a {
+    color: #000;
+    text-decoration: none;
+}

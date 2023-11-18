@@ -1,0 +1,33 @@
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: center;
+}
+
+.header-column {
+    background: #fff;
+    height: 120px;
+    width: 250px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-column-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.question-list {
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+}

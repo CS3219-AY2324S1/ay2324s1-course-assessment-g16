@@ -1,0 +1,32 @@
+.q-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    margin-top: 40px;
+    width: 600px;
+    background: #fff;
+    padding-bottom: 30px;
+}
+
+.add-q-btn {
+    position: fixed;
+    right: 60px;
+    bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: 60px;
+    color: #fff;
+    background: #52CC65;
+    border-radius: 5px;
+    font-size: 19px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+.add-q-btn:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+    background: #4fd663;
+}

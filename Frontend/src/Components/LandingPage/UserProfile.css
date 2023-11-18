@@ -1,0 +1,143 @@
+.profile-container {
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    gap: 20px;
+   }
+   
+   .edit-container {
+    display: flex;
+    justify-content: flex-end;
+   }
+   
+   .profile-section {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+   }
+   
+   .profile-edit {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.2s; /* Safari */
+    transition-duration: 0.2s;
+    box-shadow: none;
+   }
+   
+   .profile-edit:hover {
+    -webkit-filter: drop-shadow(3px 3px 1px rgba(100, 100, 111, 0.3));
+   
+    filter: drop-shadow(3px 3px 1px rgba(100, 100, 111, 0.3));
+   }
+   
+   .profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+   }
+   
+   .profile-field {
+    font-size: 20px;
+    font-weight: 600;
+   }
+   
+   .profile-input {
+    width: 35%;
+    border: none;
+    outline: none;
+    border-bottom: 3px solid;
+    font-size: 17px;
+   }
+   
+   .profile-submit-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-top: 20px;
+   }
+   
+   .submit-btn {
+    width: 90px;
+    height: 50px;
+    color: #fff;
+    background: #52cc65;
+    border: none;
+    border-radius: 5px;
+    font-size: 19px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.2s; /* Safari */
+    transition-duration: 0.2s;
+   }
+   
+   .submit-btn:hover {
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    background: #4cbd5d;
+   }
+   
+   .cancel-btn {
+    width: 90px;
+    height: 50px;
+    color: #fff;
+    background: #bebaba;
+    border: none;
+    border-radius: 5px;
+    font-size: 19px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.2s; /* Safari */
+    transition-duration: 0.2s;
+    box-shadow: none;
+   }
+   
+   .cancel-btn:hover {
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    background: #868383;
+   }
+   
+   .edit-profile-language-dropdown {
+    width: 35%;
+    height: fit-content;
+    font-size: 16px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid;
+   }
+
+   .profile-delete-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+   .profile-delete-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    width: fit-content;
+    height: 50px;
+    color: #fff;
+    background: #d63636;
+    border: none;
+    border-radius: 5px;
+    font-size: 19px;
+    cursor: pointer;
+   }
+
+   .logout-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    width: fit-content;
+    height: 50px;
+    color: #fff;
+    background: #000;
+    border: none;
+    border-radius: 5px;
+    font-size: 19px;
+    cursor: pointer;
+   }

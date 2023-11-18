@@ -1,0 +1,17 @@
+.code-editor {
+    height: inherit;
+}
+
+.language-dropdown-div {
+    width: 100%;
+    font-size: 16px;
+    gap: 20px;
+    display: inline-flex;
+    margin-bottom: 20px;
+}
+
+.language-dropdown {
+    width: 100%;
+    height: fit-content;
+    font-size: 16px;
+}

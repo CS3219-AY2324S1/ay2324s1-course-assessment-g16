@@ -1,0 +1,90 @@
+  .filter-popup {
+    text-align: center;
+    background-color: #fff;
+    border-radius: 7px;
+    position: relative;
+    padding: 18px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    font-size: 19px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  }
+  
+  .filter-overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+  }
+  
+  .dropdown-menu select {
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 19px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  }
+  
+  .hide-popup {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    cursor: pointer;
+  }
+  
+  .submit-filter {
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    height: 45px;
+    color: #fff;
+    background: #52CC65;
+    border: none;
+    border-radius: 5px;
+    font-size: 19px;
+    white-space: nowrap;
+    margin-top: 20px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.2s;
+    transition-duration: 0.2s;
+  }
+  
+  .submit-filter:hover {
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    background: #4cbd5d;
+  }
+  
+  .clear-filter {
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    height: 45px;
+    color: white;
+    background: #DD5E56;
+    border: none; /* Set the border properties for the outline */
+    border-radius: 5px;
+    font-size: 19px;
+    white-space: nowrap;
+    margin-top: 20px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.2s;
+    transition-duration: 0.2s;
+  }
+  
+  .clear-filter:hover {
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    background: #b7463e;
+  }
+
+  .button-container {
+    display: flex;
+  }

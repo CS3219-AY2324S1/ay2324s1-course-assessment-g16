@@ -1,0 +1,57 @@
+.attempt-view-container {
+    display:flex;
+    flex-direction: column;
+}
+
+.back-button {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.2s; /* Safari */
+    transition-duration: 0.2s;
+    box-shadow: none;
+}
+
+.back-button:hover {
+    -webkit-filter: drop-shadow(3px 3px 1px rgba(100, 100, 111, 0.3));
+    
+    filter: drop-shadow(3px 3px 1px rgba(100, 100, 111, 0.3));
+}
+
+.attempt-details-container {
+    display: flex;
+    flex-direction: row;
+    padding: 20px;
+    gap: 20px;
+}
+
+.attempt-q {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+.attempt-q-header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.attempt-q-tags {
+    display: flex;
+    gap: 10px
+}
+
+.attempt-q-name {
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.attempt-code {
+    width: 60%;
+    height: 60vh;
+    background: #F6F6F6;
+    padding: 8px;
+    border-radius: 10px;
+}

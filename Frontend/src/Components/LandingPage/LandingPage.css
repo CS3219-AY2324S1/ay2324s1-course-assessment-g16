@@ -1,0 +1,65 @@
+.landing-container {
+    margin: 20px 50px;
+    display: flex;
+    height: 100%;
+}
+
+.navigation-panel {
+    width: 25%;
+    padding: 30px;
+}
+
+.user-header {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.user-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.nav-tabs{
+    display: flex;
+    flex-direction: column;
+    margin-top: 40px;
+    gap: 10px;
+}
+
+.nav-tab {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 50px;
+    padding: 5px;
+    width: 200px;
+    -webkit-transition-duration: 0.2s; /* Safari */
+    transition-duration: 0.2s;
+}
+
+.nav-tab:hover{
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    background: #fbfbfb;
+}
+
+.nav-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.page-view {
+    background: #f6f6f6;
+    padding: 30px;
+    width: 75%;
+    border-radius: 10px;
+}
+
+.page-heading {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}

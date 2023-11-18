@@ -1,0 +1,11 @@
+.attempt-history-container {
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+}
+
+.attempt-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
